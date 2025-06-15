@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VISIONAT - Movement Detection</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/handpose"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/blazeface"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="overlay" id="overlay"></div>
+
+    <div class="developer-card" id="devCard">
+        <div class="close-btn" id="closeBtn">
+            <i class="fas fa-times"></i>
+        </div>
+        <div class="developer-header">
+            <div class="developer-avatar">AD</div>
+            <div>
+                <div class="developer-name">Ayush Dabey</div>
+                <div class="developer-title">Full Stack Developer</div>
+            </div>
+        </div>
+        <div class="developer-info">
+            <p>Computer Vision & AI enthusiast with expertise in full-stack development. Passionate about creating innovative solutions that blend technology and creativity.</p>
+            <p><strong>Skills:</strong> Next.js, TensorFlow, Computer Vision, React, Node.js</p>
+        </div>
+        <div class="developer-links">
+            <a href="https://www.instagram.com/_ayushhdubey_/" class="dev-link" target="_blank">
+                <i class="fab fa-instagram"></i> Instagram
+            </a>
+            <a href="https://ayush-portfolio-three-xi.vercel.app/" class="dev-link" target="_blank">
+                <i class="fas fa-globe"></i> Portfolio
+            </a>
+            <a href="https://www.linkedin.com/in/ayush-dubey-508196331/" class="dev-link" target="_blank">
+                <i class="fab fa-linkedin"></i> LinkedIn
+            </a>
+            <a href="mailto:ayushdubey3740@gmail.com" class="dev-link">
+                <i class="fas fa-envelope"></i> Email
+            </a>
+        </div>
+    </div>
+
+    <div class="dev-info-btn" id="devInfoBtn">
+        <i class="fas fa-info"></i>
+    </div>
+
+    <div class="header">
+        <h1 class="title">VISIONAT</h1>
+        <div class="subtitle">Advanced Movement & Face Detection</div>
+    </div>
+
+    <div class="container">
+        <div class="panel">
+            <h2 class="panel-title"><i class="fas fa-video"></i> CAMERA STREAM</h2>
+
+            <div class="terminal-style">
+                <div class="terminal-header">LIVE DETECTION FEED</div>
+                <div class="video-container">
+                    <video id="video" autoplay playsinline></video>
+                    <canvas id="canvas"></canvas>
+                    <div class="gesture-display">Gesture: <span class="gesture-name" id="gestureName">None</span></div>
+                </div>
+            </div>
+
+            <div class="controls">
+                <button id="startBtn" class="btn"><i class="fas fa-play"></i> START DETECTION</button>
+                <button id="stopBtn" class="btn btn-stop"><i class="fas fa-stop"></i> STOP</button>
+            </div>
+
+            <div class="status" id="status">
+                <i class="fas fa-info-circle"></i> Ready to Detect. Click START to begin.
+            </div>
+        </div>
+
+        <div class="panel">
+            <h2 class="panel-title"><i class="fas fa-chart-bar"></i> DETECTION STATS</h2>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Movements</div>
+                    <div class="stat-value" id="movementCount">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Hands</div>
+                    <div class="stat-value" id="handCount">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Faces</div>
+                    <div class="stat-value" id="faceCount">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Gestures</div>
+                    <div class="stat-value" id="gestureCount">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Confidence</div>
+                    <div class="stat-value" id="confidenceValue">0%</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">FPS</div>
+                    <div class="stat-value" id="fpsCounter">0</div>
+                </div>
+            </div>
+
+            <h3 class="panel-title" style="margin-top: 30px;"><i class="fas fa-terminal"></i> SYSTEM LOGS</h3>
+            <div class="logs" id="systemLogs">
+                <div class="log-entry"><span class="log-time">[18:34:57 PM]</span> >>> Movement detection ready</div>
+                <div class="log-entry"><span class="log-time">[18:35:02 PM]</span> System initialized</div>
+                <div class="log-entry"><span class="log-time">[18:35:05 PM]</span> TensorFlow.js backend: WebGL</div>
+            </div>
+
+            <h3 class="panel-title" style="margin-top: 30px;"><i class="fas fa-code"></i> FACE DETECTION ALGORITHM</h3>
+            <div class="terminal-style">
+                <div class="terminal-header">faceDetection.js</div>
+                <div class="code-line">
+                    <span class="line-number">1</span>
+                    <span class="code-content"><span class="comment">// Face detection function</span></span>
+                </div>
+                <div class="code-line">
+                    <span class="line-number">2</span>
+                    <span class="code-content"><span class="function">async function</span> <span class="variable">detectFaces</span>() {</span>
+                </div>
+                <div class="code-line">
+                    <span class="line-number">3</span>
+                    <span class="code-content">  <span class="function">const</span> <span class="variable">predictions</span> = <span class="function">await</span> <span class="variable">faceModel</span>.<span class="function">estimateFaces</span>(<span class="variable">video</span>);</span>
+                </div>
+                <div class="code-line">
+                    <span class="line-number">4</span>
+                    <span class="code-content">  <span class="function">for</span> (<span class="function">const</span> <span class="variable">face</span> <span class="function">of</span> <span class="variable">predictions</span>) {</span>
+                </div>
+                <div class="code-line">
+                    <span class="line-number">5</span>
+                    <span class="code-content">    <span class="function">const</span> <span class="variable">box</span> = <span class="variable">face</span>.<span class="variable">boundingBox</span>;</span>
+                </div>
+                <div class="code-line">
+                    <span class="line-number">6</span>
+                    <span class="code-content">    <span class="function">drawSquare</span>(<span class="variable">box</span>.<span class="variable">x</span>, <span class="variable">box</span>.<span class="variable">y</span>, <span class="variable">box</span>.<span class="variable">width</span>, <span class="variable">box</span>.<span class="variable">height</span>);</span>
+                </div>
+                <div class="code-line">
+                    <span class="line-number">7</span>
+                    <span class="code-content">    <span class="function">drawLandmarks</span>(<span class="variable">face</span>.<span class="variable">landmarks</span>);</span>
+                </div>
+                <div class="code-line">
+                    <span class="line-number">8</span>
+                    <span class="code-content">  }</span>
+                </div>
+                <div class="code-line">
+                    <span class="line-number">9</span>
+                    <span class="code-content">}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
